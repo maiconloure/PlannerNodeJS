@@ -19,7 +19,11 @@ export async function getActivities(app: FastifyInstance) {
         id: tripId
       },
       include: {
-        activities: true
+        activities: {
+          orderBy: {
+            occurs_at: 'asc'
+          }
+        }
       }
     })
 
@@ -27,6 +31,15 @@ export async function getActivities(app: FastifyInstance) {
       throw new Error("Trip not found")
     }
 
-    return { activities: trip.activities }
+    const differenceInDaysBetweenTripStartAndEnd = dayjs(trip.ends_at).diff(trip.starts_at, 'days')
+    const activities = Array.from({ length: differenceInDaysBetweenTripStartAndEnd + 1 }, (_, index) => {
+      const date = dayjs(trip.starts_at).add(index, 'day').toDate()
+      return {
+        date,
+        activities: trip.activities.filter((activity) => dayjs(activity.occurs_at).isSame(date, 'day'))
+      }
+    })
+
+    return { activities: activities }
   });
 }
