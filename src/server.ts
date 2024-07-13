@@ -11,6 +11,7 @@ import { getLinks } from "./routes/get-links"
 import { getParticipants } from "./routes/get-participants"
 import { createInvite } from "./routes/create-invite"
 import { updateTrip } from "./routes/update-trip"
+import { getTripDetails } from "./routes/get-trip-details"
 
 const app = fastify()
 
@@ -31,6 +32,7 @@ app.register(getLinks)
 app.register(getParticipants)
 app.register(createInvite)
 app.register(updateTrip)
+app.register(getTripDetails)
 
 app.listen({port:3333},()=>{
     console.log("Server is running on port 3000")
